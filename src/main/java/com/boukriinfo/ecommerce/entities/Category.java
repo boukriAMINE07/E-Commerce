@@ -25,7 +25,9 @@ public class Category implements Serializable {
     @NotEmpty
     @Size(min = 4,max = 50)
     private String name;
+    @NotEmpty
     private String slug;
+    @NotEmpty
     private String description;
     private Date createdAt;
     private Date updatedAt;

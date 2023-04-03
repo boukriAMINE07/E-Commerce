@@ -14,7 +14,7 @@ public interface CategoryService {
     Category updateCategory(Category category);
 
     Category updateDeletedCategory(Category category);
-    void deleteCategory(Long categoryId);
+    boolean deleteCategory(Long categoryId);
     Page<Category> getAllCategoriesWithPage(int page, int size);
     Page<Category> getAllCategoriesWithSlugAndPage(String slug,int page, int size);
 

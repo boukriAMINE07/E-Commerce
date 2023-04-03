@@ -42,7 +42,7 @@ public class ECommerceApplication {
     //@Bean
     CommandLineRunner saveCategoriesWithFaker(CategoryRepository categoryRepository) {
         return args -> {
-            Faker faker = new Faker(); // Créez une instance de la classe Faker
+            Faker faker=new Faker(); // Créez une instance de la classe Faker
 
             final int NUM_CATEGORIES = 20; // Définissez le nombre de noms de catégories à générer
 
