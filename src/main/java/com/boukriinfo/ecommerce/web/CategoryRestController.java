@@ -80,6 +80,7 @@ public class CategoryRestController {
     public List<Category> categories() {
         return categoryService.allCategories();
     }
+
     @GetMapping("/categories/notDeleted")
     public List<Category> categoriesNotDeleted() {
         try {
@@ -139,7 +140,7 @@ public class CategoryRestController {
         try {
             // Check for wrong field type
             if (!isValidFieldType(category)) {
-                throw new CategoryException("Invalid field type for category");
+                    throw new CategoryException("Invalid field type for category");
             }
             category.setId(id);
             Category updatedCategory = categoryService.updateCategory(category);
@@ -157,9 +158,15 @@ public class CategoryRestController {
     }
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Object> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
-        String errorMessage = "Une erreur s'est produite lors de la désérialisation de la requête : " + ex.getMessage();
+        String errorMessage = ex.getMessage();
+        if(errorMessage.contains("Cannot deserialize value of type `boolean` from String")) {
+            errorMessage = "Le champ 'deleted' doit être un boolean 'true' Or 'false '.";
+        }
+        else{
+            errorMessage = "Une erreur s'est produite lors de la désérialisation de la requête : " + ex.getMessage();
+        }
         log.error(errorMessage, ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CategoryError(errorMessage));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(errorMessage, HttpStatus.BAD_REQUEST));
     }
 
     private ResponseEntity<?> handleValidationErrors(BindingResult result) {
@@ -175,10 +182,8 @@ public class CategoryRestController {
 
     private boolean isValidFieldType(Category category) {
         Class<? extends Category> clazz = category.getClass();
-
         for (Field field : clazz.getDeclaredFields()) {
             Object value = null;
-
             try {
                 field.setAccessible(true);
                 value = field.get(category);
@@ -212,7 +217,7 @@ public class CategoryRestController {
             return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         }
         catch (Exception e) {
-            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse("Une erreur s'est produite lors de la suppression de la catégorie.", HttpStatus.INTERNAL_SERVER_ERROR));
+            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse("Une erreur s'est produite lors de la suppression de la catégorie avec id : "+id, HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
 

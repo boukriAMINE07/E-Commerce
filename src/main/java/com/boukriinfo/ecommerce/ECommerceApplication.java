@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import javax.xml.crypto.Data;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 

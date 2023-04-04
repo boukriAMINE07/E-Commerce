@@ -1,6 +1,5 @@
 package com.boukriinfo.ecommerce.services;
 
-import com.boukriinfo.ecommerce.entities.Category;
 import com.boukriinfo.ecommerce.entities.Product;
 import org.springframework.data.domain.Page;
 
@@ -11,9 +10,11 @@ public interface ProductService {
     List<Product> allProducts();
     Product getProduct(Long productId) ;
     Product updateProduct(Product product);
-    void deleteProduct(Long productId);
+    boolean deleteProduct(Long productId);
     Page<Product> getAllProductsWithPage(int page, int size);
     Page<Product> getAllProductsWithSlugAndPage(String slug,int page, int size);
 
     List<Product> findAllProductsNotDeleted();
+
+    Product updateDeletedProduct(Product product);
 }

@@ -1,6 +1,7 @@
 package com.boukriinfo.ecommerce.services;
 
 import com.boukriinfo.ecommerce.entities.Product;
+import com.boukriinfo.ecommerce.exceptions.ProductNotFoundException;
 import com.boukriinfo.ecommerce.repositories.ProductRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -28,9 +30,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getProduct(Long productId) {
-        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product by Id :"+productId+" not found"));
-        return product;
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        if (optionalProduct.isPresent()) {
+            return optionalProduct.get();
+        } else {
+            throw new ProductNotFoundException("Product by Id :" + productId + " not found");
+        }
     }
+
 
     @Override
     public Product updateProduct(Product product) {
@@ -44,8 +51,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProduct(Long productId) {
-        productRepository.deleteById(productId);
+    public boolean deleteProduct(Long productId) {
+        Product product=productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("Product by Id :"+productId+" not found"));
+        if (product != null){
+             productRepository.deleteById(productId);
+            return true;
+        }
+        return false;
 
     }
 
@@ -62,5 +74,16 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> findAllProductsNotDeleted() {
         return productRepository.findAllProductsNotDeleted();
+    }
+
+    @Override
+    public Product updateDeletedProduct(Product product) {
+        Product productUpdate = productRepository.findById(product.getId()).orElseThrow(() -> new ProductNotFoundException("Product by Id :"+product.getId()+" not found"));
+        if (productUpdate != null){
+            productUpdate.setDeleted(true);
+            productRepository.save(productUpdate);
+            return productUpdate;
+        }
+        return null;
     }
 }
