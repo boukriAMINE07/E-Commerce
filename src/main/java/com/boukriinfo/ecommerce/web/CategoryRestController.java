@@ -12,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -26,10 +28,12 @@ import java.util.regex.Pattern;
 @Slf4j
 @AllArgsConstructor
 @CrossOrigin("*")
+@RequestMapping("/api/")
 public class CategoryRestController {
     private CategoryService categoryService;
 
-    @GetMapping("/categories")
+    @GetMapping("categories")
+    @PreAuthorize("hasRole('ADMIN') ")
     public ResponseEntity<Map<String, Object>> getCategories(@RequestParam(required = false) String slug
                                                               , @RequestParam(name = "page",defaultValue = "0") String pageStr,
                                                                @RequestParam(name = "size",defaultValue = "8") String sizeStr) {
@@ -77,11 +81,13 @@ public class CategoryRestController {
     }
 
     @GetMapping("/categories/all")
+    @PreAuthorize("hasRole('ADMIN') ")
     public List<Category> categories() {
         return categoryService.allCategories();
     }
 
     @GetMapping("/categories/notDeleted")
+    @PreAuthorize("hasRole('ADMIN') ")
     public List<Category> categoriesNotDeleted() {
         try {
             return categoryService.findAllCategoriesNotDeleted();
@@ -92,6 +98,7 @@ public class CategoryRestController {
 
 
     @GetMapping("/categories/{id}")
+    @PreAuthorize("hasRole('ADMIN') ")
     public ResponseEntity<Object> getCategory(@PathVariable Long id) {
         try {
             Category category = categoryService.getCategory(id);
@@ -103,6 +110,7 @@ public class CategoryRestController {
         }
     }
     @PostMapping("/categories")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> saveCategory(@Valid @RequestBody Category category, BindingResult result) {
         ResponseEntity<?> responseEntity = handleValidationErrors(result);
         if (responseEntity != null) {
@@ -131,6 +139,7 @@ public class CategoryRestController {
         }
     }
     @PutMapping("/categories/{id}")
+    @PreAuthorize("hasRole('ADMIN') ")
     public ResponseEntity<?> updateCategory(@PathVariable Long id, @Valid @RequestBody Category category, BindingResult result) {
         // Check for validation errors
         ResponseEntity<?> responseEntity = handleValidationErrors(result);
@@ -203,6 +212,7 @@ public class CategoryRestController {
 
 
     @DeleteMapping("/categories/{id}")
+    @PreAuthorize("hasRole('ADMIN') ")
     public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
         try {
             boolean success = categoryService.deleteCategory(id);
@@ -224,6 +234,7 @@ public class CategoryRestController {
 
 
     @PatchMapping("/categories/{id}")
+    @PreAuthorize("hasRole('ADMIN') ")
     public ResponseEntity<?> patchCategory(@PathVariable Long id, @RequestBody Category category) {
         try {
             category.setId(id);

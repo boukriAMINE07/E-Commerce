@@ -4,19 +4,22 @@ import com.boukriinfo.ecommerce.entities.Category;
 import com.boukriinfo.ecommerce.entities.Product;
 import com.boukriinfo.ecommerce.repositories.CategoryRepository;
 import com.boukriinfo.ecommerce.repositories.ProductRepository;
+import com.boukriinfo.ecommerce.repositories2.SecondCategoryRepository;
 import com.github.javafaker.Faker;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import javax.xml.crypto.Data;
-import java.math.BigDecimal;
+
 import java.util.Date;
 import java.util.List;
 
+
 @SpringBootApplication
 public class ECommerceApplication {
+
 
     public static void main(String[] args) {
         SpringApplication.run(ECommerceApplication.class, args);
@@ -35,6 +38,24 @@ public class ECommerceApplication {
                 category.setUpdatedAt(new Date());
                 category.setDeleted(Math.random()>0.5?true:false);
                 categoryRepository.save(category);
+            }
+
+        };
+    }
+    //@Bean
+    CommandLineRunner saveCategories2(SecondCategoryRepository secondCategoryRepository){
+        return args -> {
+            String[] categoryNames = {"Ordinateurs portables", "Smartphones", "Appareils photo", "Accessoires pour ordinateurs", "Accessoires pour smartphones"};
+
+            for (String name : categoryNames) {
+                com.boukriinfo.ecommerce.entities2.Category category = new com.boukriinfo.ecommerce.entities2.Category();
+                category.setName(name);
+                category.setSlug(name.toLowerCase().replace(" ", "-"));
+                category.setDescription("Description pour la catégorie " + name);
+                category.setCreatedAt(new Date());
+                category.setUpdatedAt(new Date());
+                category.setDeleted(Math.random()>0.5?true:false);
+                secondCategoryRepository.save(category);
             }
 
         };

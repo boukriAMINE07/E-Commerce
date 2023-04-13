@@ -1,32 +1,24 @@
 package com.boukriinfo.ecommerce.web;
 
-import com.boukriinfo.ecommerce.entities.Category;
 import com.boukriinfo.ecommerce.entities.Product;
 import com.boukriinfo.ecommerce.exceptions.*;
 import com.boukriinfo.ecommerce.repositories.ProductRepository;
 import com.boukriinfo.ecommerce.services.ProductService;
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.util.StringUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -35,9 +27,9 @@ import java.util.*;
 
 
 @RestController
-
 @Slf4j
 @CrossOrigin("*")
+@RequestMapping("/api/")
 public class ProductRestController {
     @Autowired
 
@@ -45,15 +37,18 @@ public class ProductRestController {
     @Autowired
     private ProductRepository productRepository;
 
+
     private String pathURL="";
     private String name="";
-    @GetMapping("/products/all")
+    @GetMapping("products/all")
+    @PreAuthorize("hasRole('ADMIN') ")
     public List<Product> products() {
         return productRepository.findAll();
     }
 
 
-    @GetMapping("/products")
+    @GetMapping("products")
+    @PreAuthorize("hasRole('ADMIN') ")
     public ResponseEntity<Map<String, Object>> getProducts(@RequestParam(required = false) String slug,
                                                               @RequestParam(name = "page",defaultValue = "0") String pageStr,
                                                                @RequestParam(name = "size",defaultValue = "6") String sizeStr) {
@@ -97,7 +92,8 @@ public class ProductRestController {
     }
 
 
-    @GetMapping("/products/{id}")
+    @GetMapping("products/{id}")
+    @PreAuthorize("hasRole('ADMIN') ")
     public ResponseEntity<Object> getProduct(@PathVariable Long id) {
         try {
             Product product = productService.getProduct(id);
@@ -123,7 +119,8 @@ public class ProductRestController {
 
 
 
-    @PostMapping(value = "/products/upload" , consumes = {"multipart/form-data"})
+    @PostMapping(value = "products/upload" , consumes = {"multipart/form-data"})
+    @PreAuthorize("hasRole('ADMIN') ")
     public ResponseEntity<String> uploadImage(@RequestParam("image") MultipartFile file) {
         log.info("uploadImage"+file.getOriginalFilename());
         try {
@@ -159,7 +156,8 @@ public class ProductRestController {
         return "";
     }
 
-    @PostMapping(value = "/products" , consumes = { "application/json"})
+    @PostMapping(value = "products" , consumes = { "application/json"})
+    @PreAuthorize("hasRole('ADMIN') ")
     public ResponseEntity<?> saveProduct(@Valid @RequestBody Product product, BindingResult result)  {
         ResponseEntity<?> responseEntity = handleValidationErrors(result);
         if (responseEntity != null) {
@@ -196,7 +194,8 @@ public class ProductRestController {
     }
 
 
-    @GetMapping ("/products/notDeleted")
+    @GetMapping ("products/notDeleted")
+    @PreAuthorize("hasRole('ADMIN') ")
     public ResponseEntity<List<Product>> findAllProductsNotDeleted() {
         try {
             List<Product> products = productService.findAllProductsNotDeleted();
@@ -208,7 +207,8 @@ public class ProductRestController {
 
 
 
-    @PutMapping("/products/{id}")
+    @PutMapping("products/{id}")
+    @PreAuthorize("hasRole('ADMIN') ")
     public ResponseEntity<?> updateProduct( @PathVariable Long id,@Valid @RequestBody Product product, BindingResult result) {
         product.setId(id);
         ResponseEntity<?> responseEntity = handleValidationErrors(result);
@@ -223,7 +223,8 @@ public class ProductRestController {
         return ResponseEntity.ok(product1);
     }
 
-    @DeleteMapping("/products/{id}")
+    @DeleteMapping("products/{id}")
+    @PreAuthorize("hasRole('ADMIN') ")
     public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
         try {
             boolean success = productService.deleteProduct(id);
@@ -241,11 +242,13 @@ public class ProductRestController {
         }
     }
 
-    @PatchMapping("/products/{id}")
+    @PatchMapping("products/{id}")
+    @PreAuthorize("hasRole('ADMIN') ")
     public ResponseEntity<?> deleteProduct(@PathVariable Long id, @RequestBody Product product) {
         try{
             product.setId(id);
             Product product1 = productService.updateDeletedProduct(product);
+
             return ResponseEntity.ok(product1);
         } catch (CategoryNotFoundException ex) {
             ErrorResponse errorResponse = new ErrorResponse("Product by Id :" + id + " not found", HttpStatus.NOT_FOUND);

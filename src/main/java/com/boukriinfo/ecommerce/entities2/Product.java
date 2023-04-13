@@ -1,18 +1,14 @@
-package com.boukriinfo.ecommerce.entities;
+package com.boukriinfo.ecommerce.entities2;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.format.annotation.NumberFormat;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -33,9 +29,7 @@ public class Product implements Serializable {
     @NotEmpty
     private String slug;
     private String image;
-    @Column(name = "created_at")
     private Date createdAt;
-    @Column(name = "updated_at")
     private Date updatedAt;
     private boolean deleted;
 

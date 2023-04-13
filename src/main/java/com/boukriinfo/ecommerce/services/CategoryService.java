@@ -19,4 +19,5 @@ public interface CategoryService {
     Page<Category> getAllCategoriesWithSlugAndPage(String slug,int page, int size);
 
     List<Category> findAllCategoriesNotDeleted();
+
 }

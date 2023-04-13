@@ -1,4 +1,4 @@
-package com.boukriinfo.ecommerce.entities;
+package com.boukriinfo.ecommerce.entities2;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;

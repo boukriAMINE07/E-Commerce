@@ -3,10 +3,16 @@ package com.boukriinfo.ecommerce.services;
 import com.boukriinfo.ecommerce.entities.Category;
 import com.boukriinfo.ecommerce.exceptions.CategoryNotFoundException;
 import com.boukriinfo.ecommerce.repositories.CategoryRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,15 +20,21 @@ import java.util.List;
 
 @Service
 @Transactional
-@AllArgsConstructor
 @Slf4j
+@AllArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
     private CategoryRepository categoryRepository;
 
+    private KafkaTemplate<String, com.boukriinfo.ecommerce.entities2.Category> kafkaTemplate;
     @Override
     public Category saveCategory(Category category) {
-        return categoryRepository.save(category);
+        Category savedCategory = categoryRepository.save(category);
+        com.boukriinfo.ecommerce.entities2.Category category2 = new com.boukriinfo.ecommerce.entities2.Category();
+        BeanUtils.copyProperties(savedCategory, category2);
+        kafkaTemplate.send("topic-category", category2);
+        return savedCategory;
     }
+
 
     @Override
     public List<Category> allCategories() {
@@ -93,5 +105,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
         return categories;
     }
+
+
 
 }

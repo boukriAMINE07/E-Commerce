@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<Category,Long>{
 
+
     @Query("SELECT c FROM Category c WHERE c.slug LIKE %:slug% AND c.deleted = false ORDER BY c.id DESC")
     Page<Category> findAllBySlugContainingAndNotDeleted(@Param("slug") String slug, Pageable pageable);
 
