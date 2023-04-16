@@ -42,8 +42,7 @@ public class Product implements Serializable {
     @ManyToOne
     private Category category;
 
-    @Transient
-    private String categoryName; // Ajout du champ categoryName
+
     public boolean getDeleted() {
         return deleted;
     }

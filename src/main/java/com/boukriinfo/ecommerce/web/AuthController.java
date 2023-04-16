@@ -1,15 +1,20 @@
 package com.boukriinfo.ecommerce.web;
 
 import com.boukriinfo.ecommerce.entities.ERole;
+import com.boukriinfo.ecommerce.entities.RefreshToken;
 import com.boukriinfo.ecommerce.entities.Role;
 import com.boukriinfo.ecommerce.entities.User;
+import com.boukriinfo.ecommerce.exceptions.TokenRefreshException;
 import com.boukriinfo.ecommerce.repositories.RoleRepository;
 import com.boukriinfo.ecommerce.repositories.UserRepositories;
 import com.boukriinfo.ecommerce.security.jwt.JwtUtils;
 import com.boukriinfo.ecommerce.security.payload.request.LoginRequest;
 import com.boukriinfo.ecommerce.security.payload.request.SignupRequest;
+import com.boukriinfo.ecommerce.security.payload.request.TokenRefreshRequest;
 import com.boukriinfo.ecommerce.security.payload.response.JwtResponse;
 import com.boukriinfo.ecommerce.security.payload.response.MessageResponse;
+import com.boukriinfo.ecommerce.security.payload.response.TokenRefreshResponse;
+import com.boukriinfo.ecommerce.security.services.RefreshTokenService;
 import com.boukriinfo.ecommerce.security.services.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -25,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -33,6 +39,8 @@ import java.util.Set;
 public class AuthController {
 
     AuthenticationManager authenticationManager;
+
+    RefreshTokenService refreshTokenService;
     UserRepositories userRepository;
     RoleRepository roleRepository;
     PasswordEncoder encoder;
@@ -47,10 +55,27 @@ public class AuthController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .toList();
-        return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles));
+        List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
+                .collect(Collectors.toList());
+
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+
+        return ResponseEntity.ok(new JwtResponse(jwt, refreshToken.getToken(), userDetails.getId(),
+                userDetails.getUsername(), userDetails.getEmail(), roles));
+    }
+    @PostMapping("/refreshtoken")
+    public ResponseEntity<?> refreshtoken(@Valid @RequestBody TokenRefreshRequest request) {
+        String requestRefreshToken = request.getRefreshToken();
+
+        return refreshTokenService.findByToken(requestRefreshToken)
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String token = jwtUtils.generateTokenFromUsername(user.getUsername());
+                    return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
+                })
+                .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
+                        "Refresh token is not in database!"));
     }
 
     @PostMapping("/signup")
