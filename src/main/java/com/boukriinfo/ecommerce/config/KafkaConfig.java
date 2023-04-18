@@ -1,5 +1,6 @@
 package com.boukriinfo.ecommerce.config;
 import com.boukriinfo.ecommerce.deserializers.SecondCategoryDeserializer;
+import com.boukriinfo.ecommerce.entities2.Product;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import com.boukriinfo.ecommerce.repositories.CategoryRepository;
@@ -30,7 +31,7 @@ public class KafkaConfig {
         // configure the consumer properties
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "my-group-id");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "my-group-id"+"-category");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
@@ -64,6 +65,34 @@ public class KafkaConfig {
         return new DefaultKafkaConsumerFactory<>(consumerConfigs(), new StringDeserializer(),
                 new ErrorHandlingDeserializer<>(new SecondCategoryDeserializer()));
     }
+
+    @Bean
+    public Map<String, Object> productConsumerConfigs() {
+        // configure the consumer properties for Product messages
+        Map<String, Object> props = new HashMap<>();
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "my-group-id" + "-product");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        props.put(JsonDeserializer.TRUSTED_PACKAGES, "java.util,java.lang,com.boukriinfo.ecommerce.entities,com.boukriinfo.ecommerce.entities2,com.boukriinfo.ecommerce.entities2.*");
+
+        return props;
+    }
+    @Bean
+    public ConsumerFactory<String, Product> productConsumerFactory() {
+        return new DefaultKafkaConsumerFactory<>(productConsumerConfigs(), new StringDeserializer(),
+                new ErrorHandlingDeserializer<>(new JsonDeserializer<>(Product.class)));
+    }
+    @Bean
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, Product>> productKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, Product> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(productConsumerFactory());
+        return factory;
+    }
+
+
+
 
 }
 

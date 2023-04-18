@@ -80,13 +80,13 @@ public class CategoryRestController {
         }
     }
 
-    @GetMapping("/categories/all")
+    @GetMapping("categories/all")
     @PreAuthorize("hasRole('ADMIN') ")
     public List<Category> categories() {
         return categoryService.allCategories();
     }
 
-    @GetMapping("/categories/notDeleted")
+    @GetMapping("categories/notDeleted")
     @PreAuthorize("hasRole('ADMIN') ")
     public List<Category> categoriesNotDeleted() {
         try {
@@ -97,7 +97,7 @@ public class CategoryRestController {
     }
 
 
-    @GetMapping("/categories/{id}")
+    @GetMapping("categories/{id}")
     @PreAuthorize("hasRole('ADMIN') ")
     public ResponseEntity<Object> getCategory(@PathVariable Long id) {
         try {
@@ -138,7 +138,7 @@ public class CategoryRestController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new CategoryError(errorMessage));
         }
     }
-    @PutMapping("/categories/{id}")
+    @PutMapping("categories/{id}")
     @PreAuthorize("hasRole('ADMIN') ")
     public ResponseEntity<?> updateCategory(@PathVariable Long id, @Valid @RequestBody Category category, BindingResult result) {
         // Check for validation errors
@@ -211,7 +211,7 @@ public class CategoryRestController {
     }
 
 
-    @DeleteMapping("/categories/{id}")
+    @DeleteMapping("categories/{id}")
     @PreAuthorize("hasRole('ADMIN') ")
     public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
         try {
@@ -233,7 +233,7 @@ public class CategoryRestController {
 
 
 
-    @PatchMapping("/categories/{id}")
+    @PatchMapping("categories/{id}")
     @PreAuthorize("hasRole('ADMIN') ")
     public ResponseEntity<?> patchCategory(@PathVariable Long id, @RequestBody Category category) {
         try {

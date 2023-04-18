@@ -34,19 +34,6 @@ public class CategoryServiceImpl implements CategoryService {
         kafkaTemplate.send("topic-category", category2);
         return savedCategory;
     }
-
-
-    @Override
-    public List<Category> allCategories() {
-        return categoryRepository.findAll();
-    }
-
-    @Override
-    public Category getCategory(Long categoryId) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException("Category by Id :" + categoryId + " not found"));
-        return category;
-    }
-
     @Override
     public Category updateCategory(Category category) {
         Category categoryUpdate = categoryRepository.findById(category.getId()).orElseThrow(() -> new CategoryNotFoundException("Category by Id :" + category.getId() + " not found"));
@@ -59,16 +46,36 @@ public class CategoryServiceImpl implements CategoryService {
             categoryUpdate.setUpdatedAt(category.getUpdatedAt());
             categoryUpdate.setCreatedAt(category.getCreatedAt());
             categoryRepository.save(categoryUpdate);
+            com.boukriinfo.ecommerce.entities2.Category category2 = new com.boukriinfo.ecommerce.entities2.Category();
+            BeanUtils.copyProperties(categoryUpdate, category2);
+            kafkaTemplate.send("topic-category", category2);
             return categoryUpdate;
         }
         return null;
     }
 
     @Override
+    public List<Category> allCategories() {
+        return categoryRepository.findAll();
+    }
+
+    @Override
+    public Category getCategory(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException("Category by Id :" + categoryId + " not found"));
+        return category;
+    }
+
+
+
+    @Override
     public Category updateDeletedCategory(Category category) {
         Category categoryUpdate = categoryRepository.findById(category.getId()).orElseThrow(() -> new CategoryNotFoundException("Category by Id :" + category.getId() + " not found"));
         if (categoryUpdate != null) {
             categoryUpdate.setDeleted(true);
+            com.boukriinfo.ecommerce.entities2.Category category2 = new com.boukriinfo.ecommerce.entities2.Category();
+            BeanUtils.copyProperties(categoryUpdate, category2);
+            kafkaTemplate.send("topic-category", category2);
+
             categoryRepository.save(categoryUpdate);
             return categoryUpdate;
         }
