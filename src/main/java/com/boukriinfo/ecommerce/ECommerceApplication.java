@@ -29,7 +29,7 @@ public class ECommerceApplication {
 
 
 
-   // @Bean
+    //@Bean
     CommandLineRunner saveCategoriesAndCategories2WithFaker(CategoryRepository categoryRepository,SecondCategoryRepository secondCategoryRepository) {
         return args -> {
             Faker faker=new Faker(); // Créez une instance de la classe Faker
@@ -93,7 +93,7 @@ public class ECommerceApplication {
         };
     }
    //
-  // @Bean
+   //@Bean
     CommandLineRunner saveProducts2(ProductRepository productRepository,SecondProductRepositories secondProductRepositories, SecondCategoryRepository secondCategoryRepository) {
         return args -> {
             List<Product> products = productRepository.findAll();

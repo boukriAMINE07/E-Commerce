@@ -26,7 +26,7 @@ public class SecondCategoryServiceImpl implements SecondCategoryService {
         return savedCategory;
     }
 
-    @KafkaListener(topics = "topic-category", containerFactory = "secondKafkaListenerContainerFactory")
+    @KafkaListener(topics = "topic-up-category", containerFactory = "secondKafkaListenerContainerFactory")
     public Category updateCategory(Category category) {
         Category categoryUpdate = secondCategoryRepository.findById(category.getId()).orElseThrow(() -> new CategoryNotFoundException("Category by Id :" + category.getId() + " not found in second category"));
         if (categoryUpdate != null) {
@@ -45,7 +45,7 @@ public class SecondCategoryServiceImpl implements SecondCategoryService {
         return null;
     }
 
-    @KafkaListener(topics = "topic-category", containerFactory = "secondKafkaListenerContainerFactory")
+    @KafkaListener(topics = "topic-del-category", containerFactory = "secondKafkaListenerContainerFactory")
     public Category updateDeletedCategory(Category category) {
         Category categoryUpdate = secondCategoryRepository.findById(category.getId()).orElseThrow(() -> new CategoryNotFoundException("Category by Id :" + category.getId() + " not found in second category"));
         if (categoryUpdate != null) {

@@ -48,7 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
             categoryRepository.save(categoryUpdate);
             com.boukriinfo.ecommerce.entities2.Category category2 = new com.boukriinfo.ecommerce.entities2.Category();
             BeanUtils.copyProperties(categoryUpdate, category2);
-            kafkaTemplate.send("topic-category", category2);
+            kafkaTemplate.send("topic-up-category", category2);
             return categoryUpdate;
         }
         return null;
@@ -74,7 +74,7 @@ public class CategoryServiceImpl implements CategoryService {
             categoryUpdate.setDeleted(true);
             com.boukriinfo.ecommerce.entities2.Category category2 = new com.boukriinfo.ecommerce.entities2.Category();
             BeanUtils.copyProperties(categoryUpdate, category2);
-            kafkaTemplate.send("topic-category", category2);
+            kafkaTemplate.send("topic-del-category", category2);
 
             categoryRepository.save(categoryUpdate);
             return categoryUpdate;
