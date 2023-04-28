@@ -38,18 +38,9 @@ public class Product implements Serializable {
     @Column(name = "updated_at")
     private Date updatedAt;
     private boolean deleted;
-
     @ManyToOne
     private Category category;
-
-
     public boolean getDeleted() {
         return deleted;
     }
-
-
-
-
-
-
 }

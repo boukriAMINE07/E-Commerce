@@ -1,7 +1,7 @@
 package com.boukriinfo.ecommerce.services;
 
 import com.boukriinfo.ecommerce.entities.Product;
-import com.boukriinfo.ecommerce.entities2.Category;
+
 import com.boukriinfo.ecommerce.exceptions.ProductNotFoundException;
 import com.boukriinfo.ecommerce.repositories.ProductRepository;
 import lombok.AllArgsConstructor;
@@ -20,14 +20,13 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private ProductRepository productRepository;
-    private KafkaTemplate<String, com.boukriinfo.ecommerce.entities2.Product> kafkaTemplate;
+    private KafkaTemplate<String, Product> kafkaTemplate;
 
     @Override
     public Product saveProduct(Product product) {
         Product save = productRepository.save(product);
-        com.boukriinfo.ecommerce.entities2.Product product2 = new com.boukriinfo.ecommerce.entities2.Product();
-        BeanUtils.copyProperties(save, product2);
-        kafkaTemplate.send("topic-product", product2);
+
+        kafkaTemplate.send("topic-add-product", save);
         return save;
     }
 
@@ -52,8 +51,8 @@ public class ProductServiceImpl implements ProductService {
         Product productUpdate = productRepository.findById(product.getId()).orElseThrow(() -> new RuntimeException("Product by Id :"+product.getId()+" not found"));
         if (productUpdate != null){
             BeanUtils.copyProperties(product,productUpdate);
-
-            productRepository.save(productUpdate);
+            Product save = productRepository.save(productUpdate);
+            kafkaTemplate.send("topic-up-product", save);
             return productUpdate;
         }
         return null;
