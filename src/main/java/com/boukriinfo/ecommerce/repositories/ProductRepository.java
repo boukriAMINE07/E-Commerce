@@ -19,4 +19,7 @@ public interface ProductRepository extends JpaRepository<Product,Long>{
     @Query("SELECT p FROM Product p WHERE p.deleted = false ORDER BY p.id DESC")
     List<Product> findAllProductsNotDeleted();
 
+
+
+
 }

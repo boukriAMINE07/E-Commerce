@@ -70,10 +70,6 @@ public class CategoryServiceImpl implements CategoryService {
         Category categoryUpdate = categoryRepository.findById(category.getId()).orElseThrow(() -> new CategoryNotFoundException("Category by Id :" + category.getId() + " not found"));
         if (categoryUpdate != null) {
             categoryUpdate.setDeleted(true);
-           // com.boukriinfo.ecommerce.entities2.Category category2 = new com.boukriinfo.ecommerce.entities2.Category();
-            //BeanUtils.copyProperties(categoryUpdate, category2);
-           // kafkaTemplate.send("topic-del-category", category2);
-
             categoryRepository.save(categoryUpdate);
             return categoryUpdate;
         }
