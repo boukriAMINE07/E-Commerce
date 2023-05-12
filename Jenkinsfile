@@ -26,8 +26,7 @@ pipeline {
 
         stage('Build project') {
             steps {
-                mvn 'clean install -DskipTests', 'product_management_system_original'
-                mvn 'clean install -DskipTests', 'product_management_system_kafka'
+                mvn 'clean install -DskipTests', '.'
             }
         }
 
