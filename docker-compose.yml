@@ -33,6 +33,7 @@ services:
     restart: always
     environment:
       MYSQL_HOST: mysql-original
+      MYSQL_USER: root
       MYSQL_PASSWORD: mysql
       MYSQL_DATABASE: E_commerce1
       MYSQL_ROOT_PASSWORD: 'mysql'  # Enclose in single quotes

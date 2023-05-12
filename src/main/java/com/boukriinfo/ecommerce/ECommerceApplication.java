@@ -30,7 +30,7 @@ public class ECommerceApplication {
         SpringApplication.run(ECommerceApplication.class, args);
     }
 
-    @Bean
+    //@Bean
     CommandLineRunner saveCategory(CategoryRepository categoryRepository){
 
         return args -> {
@@ -43,7 +43,7 @@ public class ECommerceApplication {
             }
         };
     }
-    @Bean
+    //@Bean
     CommandLineRunner saveRole(RoleRepository roleRepository){
 
             return args -> {
