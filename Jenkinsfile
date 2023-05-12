@@ -18,7 +18,7 @@ pipeline {
     }
 
     stages {
-        stage('Clean workspace !') {
+        stage('Clean workspace before build') {
             steps {
                 deleteDir()
             }
