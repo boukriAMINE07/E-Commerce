@@ -40,7 +40,7 @@ services:
       - ./mysql-data:/var/lib/mysql
 
   springboot-app:
-    image: mouradtals/e-commerce  # Replace with your desired image and version
+    image: mouradtals/e-commerce:0.0.1-SNAPSHOT  # Replace with your desired image and version
     depends_on:
       - mysqldb
       - kafka
