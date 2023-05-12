@@ -7,6 +7,6 @@ WORKDIR /app
 COPY target/*.jar ecommerce.jar
 
 # Expose port 8080 for the container
-EXPOSE 8080
+EXPOSE 8081
 # Run the jar file when the container launches
 ENTRYPOINT ["java", "-jar", "ecommerce.jar"]
