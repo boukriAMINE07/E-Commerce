@@ -32,8 +32,11 @@ services:
     image: mysql:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: 'mysql'  # Enclose in single quotes
+      MYSQL_HOST: mysql-original
+      MYSQL_USER: root
+      MYSQL_PASSWORD: mysql
       MYSQL_DATABASE: E_commerce1
+      MYSQL_ROOT_PASSWORD: 'mysql'  # Enclose in single quotes
     ports:
       - '3306:3306'
     volumes:
@@ -50,5 +53,7 @@ services:
       MYSQL_HOST: mysqldb
       MYSQL_USER: root
       MYSQL_PASSWORD: 'mysql'  # Enclose in single quotes
+      MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_DATABASE: E_commerce1
       MYSQL_PORT: 3306
       SPRING_KAFKA_BOOTSTRAP-SERVERS: kafka:29092
