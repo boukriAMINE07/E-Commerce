@@ -18,11 +18,17 @@ pipeline {
     }
 
     stages {
-        stage('Pull code from repository') {
+        stage('Clean workspace') {
             steps {
-                checkout scm
+                deleteDir()
             }
         }
+
+        stage('Pull code from repository') {
+                    steps {
+                        checkout scm
+                    }
+             }
 
         stage('Build project') {
             steps {
