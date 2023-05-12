@@ -47,7 +47,7 @@ services:
     environment:
       MYSQL_HOST: mysqldb
       MYSQL_USER: root
-      MYSQL_PASSWORD: HJ7#jK9$3qL@5N
+      MYSQL_PASSWORD: 'HJ7#jK9$3qL@5N'
       MYSQL_PORT: 3306
       SPRING_KAFKA_BOOTSTRAP-SERVERS: kafka:29092
 
