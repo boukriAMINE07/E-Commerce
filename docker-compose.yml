@@ -32,7 +32,7 @@ services:
     image: mysql:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: 'HJ7#jK9$3qL@5N'  # Enclose in single quotes
+      MYSQL_ROOT_PASSWORD: 'mysql'  # Enclose in single quotes
       MYSQL_DATABASE: E_commerce1
     ports:
       - '3306:3306'
@@ -49,6 +49,6 @@ services:
     environment:
       MYSQL_HOST: mysqldb
       MYSQL_USER: root
-      MYSQL_PASSWORD: 'HJ7#jK9$3qL@5N'  # Enclose in single quotes
+      MYSQL_PASSWORD: 'mysql'  # Enclose in single quotes
       MYSQL_PORT: 3306
       SPRING_KAFKA_BOOTSTRAP-SERVERS: kafka:29092
