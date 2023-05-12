@@ -10,7 +10,6 @@ services:
       JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
     depends_on:
       - "kafka"
-
   kafka:
     image: obsidiandynamics/kafka
     restart: "no"
@@ -26,29 +25,29 @@ services:
       KAFKA_RESTART_ATTEMPTS: "10"
       KAFKA_RESTART_DELAY: "5"
       ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL: "0"
-
   mysqldb:
     container_name: mysqldb
     image: mysql:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: "HJ7#jK9$3qL@5N"
+      MYSQL_ROOT_PASSWORD: 'HJ7#jK9$3qL@5N'
       MYSQL_DATABASE: E_commerce1
     ports:
       - '3306:3306'
     volumes:
       - ./mysql-data:/var/lib/mysql
-
   springboot-app:
-    image: mouradtals/e-commerce:latest  # Update with the appropriate image name and version
+    image: springboot-app
     depends_on:
       - mysqldb
       - kafka
+    build: .
     ports:
       - "8081:8081"
     environment:
       MYSQL_HOST: mysqldb
       MYSQL_USER: root
-      MYSQL_PASSWORD: "HJ7#jK9$3qL@5N"
+      MYSQL_PASSWORD: 'HJ7#jK9$3qL@5N'
       MYSQL_PORT: 3306
       SPRING_KAFKA_BOOTSTRAP-SERVERS: kafka:29092
+
