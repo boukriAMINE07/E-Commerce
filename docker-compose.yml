@@ -27,13 +27,12 @@ services:
       KAFKA_RESTART_DELAY: "5"
       ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL: "0"
 
-
   mysqldb:
     container_name: mysqldb
     image: mysql:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: 'mysql'
+      MYSQL_ROOT_PASSWORD: 'mysql'  # Enclose in single quotes
       MYSQL_DATABASE: E_commerce1
     ports:
       - '3306:3306'
@@ -41,7 +40,7 @@ services:
       - ./mysql-data:/var/lib/mysql
 
   springboot-app:
-    image: mouradtals/e-commerce:0.0.1-SNAPSHOT
+    image: mouradtals/e-commerce:0.0.1-SNAPSHOT  # Replace with your desired image and version
     depends_on:
       - mysqldb
       - kafka
