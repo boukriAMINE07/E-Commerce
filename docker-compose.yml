@@ -32,7 +32,7 @@ services:
     image: mysql:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: "HJ7#jK9$3qL@5N"
+      MYSQL_ROOT_PASSWORD: 'HJ7#jK9$3qL@5N'  # Enclose in single quotes
       MYSQL_DATABASE: E_commerce1
     ports:
       - '3306:3306'
@@ -40,7 +40,7 @@ services:
       - ./mysql-data:/var/lib/mysql
 
   springboot-app:
-    image: mouradtals/e-commerce:latest  # Update with the appropriate image name and version
+    image: mouradtals/springboot-app:${app_version}  # Replace with your desired image and version
     depends_on:
       - mysqldb
       - kafka
@@ -49,6 +49,6 @@ services:
     environment:
       MYSQL_HOST: mysqldb
       MYSQL_USER: root
-      MYSQL_PASSWORD: "HJ7#jK9$3qL@5N"
+      MYSQL_PASSWORD: 'HJ7#jK9$3qL@5N'  # Enclose in single quotes
       MYSQL_PORT: 3306
       SPRING_KAFKA_BOOTSTRAP-SERVERS: kafka:29092
