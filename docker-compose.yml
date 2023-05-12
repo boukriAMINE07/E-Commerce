@@ -30,7 +30,7 @@ services:
     image: mysql:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: 'HJ7#jK9$3qL@5N'
+      MYSQL_ROOT_PASSWORD: "HJ7#jK9$3qL@5N"
       MYSQL_DATABASE: E_commerce1
     ports:
       - '3306:3306'
