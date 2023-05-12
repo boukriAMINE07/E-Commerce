@@ -34,17 +34,9 @@ pipeline {
             steps {
                 script {
                     def scannerHome = tool 'SonarQube';
-                    dir('product_management_system_original') {
                         withSonarQubeEnv('SonarServer') {
-                            sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=pms_original -Dsonar.projectName='pms_original' -Dsonar.exclusions=**/*.java"
+                            sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=ecommerce -Dsonar.projectName='ecommerce' -Dsonar.exclusions=**/*.java"
                         }
-                    }
-
-                    dir('product_management_system_kafka') {
-                        withSonarQubeEnv('SonarServer') {
-                            sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=pms_kafka -Dsonar.projectName='pms_kafka' -Dsonar.exclusions=**/*.java"
-                        }
-                    }
                 }
             }
         }
@@ -60,8 +52,7 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'DOCKER_CREDS', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
-                        dockerBuildPush('product_management_system_original')
-                        dockerBuildPush('product_management_system_kafka')
+                        dockerBuildPush('.')
                     }
                 }
             }
