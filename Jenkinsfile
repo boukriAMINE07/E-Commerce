@@ -4,7 +4,7 @@ def mvn(String args, String dir) {
 
 def dockerBuildPush(String dir) {
     def app_version = sh(script: "mvn help:evaluate -Dexpression=project.version -q -DforceStdout -f ${dir}/pom.xml", returnStdout: true).trim()
-    def app_name = sh(script: "mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout -f ${dir}/pom.xml", returnStdout: true).trim()
+    def app_name = sh(script: "mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout -f ${dir}/pom.xml", returnStdout: true).trim().toLowerCase()
     def image_name = "mouradtals/${app_name}:${app_version}"
     sh "docker build -t ${image_name} ${dir}"
     sh "docker push ${image_name}"
