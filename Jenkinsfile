@@ -19,6 +19,13 @@ pipeline {
 
     stages {
 
+
+        stage('Delete workspace') {
+            steps {
+                deleteDir()
+            }
+        }
+
         stage('Pull code from repository') {
                     steps {
                         checkout scm
