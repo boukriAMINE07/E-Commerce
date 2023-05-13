@@ -26,8 +26,8 @@ services:
       KAFKA_RESTART_DELAY: "5"
       ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL: "0"
 
-  mysql_ecommerce:
-    container_name: mysql_ecommerce
+  mysqldb:
+    container_name: mysqldb
     image: mysql:latest
     restart: always
     environment:
@@ -36,20 +36,20 @@ services:
     ports:
       - '3360:3306'
     volumes:
-      - ./mysql_ecommerce:/var/lib/mysql
+      - ./mysqldb:/var/lib/mysql
 
   springboot-app:
     image: mouradtals/e-commerce:0.0.1-SNAPSHOT
     depends_on:
-      - mysql_ecommerce
+      - mysqldb
       - kafka
-    build: .
     ports:
       - "8081:8081"
+    build: .
     environment:
-      MYSQL_HOST: mysql_ecommerce
+      MYSQL_HOST: mysqldb
       MYSQL_USER: root
       MYSQL_PASSWORD: mysql
-      MYSQL_PORT: 3360
+      MYSQL_PORT: 3306
       SPRING_KAFKA_BOOTSTRAP-SERVERS: kafka:29092
 
