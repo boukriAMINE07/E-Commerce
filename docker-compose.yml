@@ -39,7 +39,7 @@ services:
       - ./mysql_ecommerce:/var/lib/mysql
 
   springboot-app:
-    image: springboot-app
+    image: mouradtals/e-commerce:0.0.1-SNAPSHOT
     depends_on:
       - mysql_ecommerce
       - kafka
